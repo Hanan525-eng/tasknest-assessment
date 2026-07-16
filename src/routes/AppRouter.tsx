@@ -1,8 +1,12 @@
+
+// src/routes/AppRouter.tsx
+
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import LoginPage from "../features/auth/pages/LoginPage";
 import RegisterPage from "../features/auth/pages/RegisterPage";
 import DashboardPage from "../features/projects/pages/DashboardPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRouter() {
   return (
@@ -14,7 +18,14 @@ function AppRouter() {
 
         <Route path="/auth/register" element={<RegisterPage />} />
 
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
