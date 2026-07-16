@@ -3,6 +3,7 @@
 import { create } from "zustand";
 
 import { projectService } from "../services/project.service";
+import { taskService } from "../services/task.service";
 
 import type {
   Project,
@@ -10,225 +11,117 @@ import type {
   UpdateProjectData,
 } from "../types/project.types";
 
-type ProjectStatus =
-  | "idle"
-  | "loading"
-  | "success"
-  | "error";
+type ProjectStatus = "idle" | "loading" | "success" | "error";
 
 interface ProjectState {
   projects: Project[];
-
   selectedProject: Project | null;
-
   status: ProjectStatus;
-
   error: string | null;
 
   loadProjects: () => void;
-
-  createProject: (
-    data: CreateProjectData
-  ) => void;
-
-  updateProject: (
-    id: string,
-    data: UpdateProjectData
-  ) => void;
-
-  deleteProject: (
-    id: string
-  ) => void;
-
-  selectProject: (
-    id: string
-  ) => void;
-
-  getProjectById: (
-    id: string
-  ) => Project | null;
-
+  createProject: (data: CreateProjectData) => Project | null;
+  updateProject: (id: string, data: UpdateProjectData) => Project | null;
+  deleteProject: (id: string) => boolean;
+  selectProject: (id: string) => void;
+  getProjectById: (id: string) => Project | null;
   clearSelection: () => void;
-
   clearError: () => void;
 }
 
-export const useProjectStore =
-  create<ProjectState>((set, get) => ({
-    projects: [],
+export const useProjectStore = create<ProjectState>((set, get) => ({
+  projects: [],
+  selectedProject: null,
+  status: "idle",
+  error: null,
 
-    selectedProject: null,
+  loadProjects: () => {
+    set({ status: "loading", error: null });
+    try {
+      const projects = projectService.getAll();
+      set({ projects, status: "success" });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      set({ status: "error", error: message });
+    }
+  },
 
-    status: "idle",
+  createProject: (data) => {
+    set({ status: "loading", error: null });
+    try {
+      const project = projectService.create(data);
+      set((state) => ({
+        projects: [...state.projects, project],
+        status: "success",
+      }));
+      return project;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      set({ status: "error", error: message });
+      return null;
+    }
+  },
 
-    error: null,
+  updateProject: (id, data) => {
+    set({ status: "loading", error: null });
+    try {
+      const updatedProject = projectService.update(id, data);
 
-    loadProjects: () => {
-      set({
-        status: "loading",
-        error: null,
-      });
-
-      try {
-        const projects = projectService.getAll();
-
-        set({
-          projects,
-          status: "success",
-        });
-      } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : "UNKNOWN_ERROR";
-
-        set({
-          status: "error",
-          error: message,
-        });
+      if (!updatedProject) {
+        throw new Error("PROJECT_NOT_FOUND");
       }
-    },
 
-    createProject: (data) => {
-      set({
-        status: "loading",
-        error: null,
-      });
+      set((state) => ({
+        projects: state.projects.map((project) =>
+          project.id === id ? updatedProject : project
+        ),
+        selectedProject: updatedProject,
+        status: "success",
+      }));
+      return updatedProject;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      set({ status: "error", error: message });
+      return null;
+    }
+  },
 
-      try {
-        const project =
-          projectService.create(data);
+  deleteProject: (id) => {
+    set({ status: "loading", error: null });
+    try {
+      const deleted = projectService.delete(id);
 
-        set((state) => ({
-          projects: [
-            ...state.projects,
-            project,
-          ],
-          status: "success",
-        }));
-      } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : "UNKNOWN_ERROR";
-
-        set({
-          status: "error",
-          error: message,
-        });
+      if (!deleted) {
+        throw new Error("PROJECT_NOT_FOUND");
       }
-    },
 
-    updateProject: (id, data) => {
-      set({
-        status: "loading",
-        error: null,
-      });
+      // متطلب صريح في الـ PDF: حذف المشروع لازم يمسح الـ tasks بتاعته
+      taskService.deleteByProjectId(id);
 
-      try {
-        const updatedProject =
-          projectService.update(id, data);
+      set((state) => ({
+        projects: state.projects.filter((project) => project.id !== id),
+        selectedProject:
+          state.selectedProject?.id === id ? null : state.selectedProject,
+        status: "success",
+      }));
+      return true;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      set({ status: "error", error: message });
+      return false;
+    }
+  },
 
-        if (!updatedProject) {
-          throw new Error(
-            "PROJECT_NOT_FOUND"
-          );
-        }
+  selectProject: (id) => {
+    const project = get().projects.find((project) => project.id === id) ?? null;
+    set({ selectedProject: project });
+  },
 
-        set((state) => ({
-          projects: state.projects.map(
-            (project) =>
-              project.id === id
-                ? updatedProject
-                : project
-          ),
+  getProjectById: (id) => {
+    return get().projects.find((project) => project.id === id) ?? null;
+  },
 
-          selectedProject:
-            updatedProject,
+  clearSelection: () => set({ selectedProject: null }),
 
-          status: "success",
-        }));
-      } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : "UNKNOWN_ERROR";
-
-        set({
-          status: "error",
-          error: message,
-        });
-      }
-    },
-
-    deleteProject: (id) => {
-      set({
-        status: "loading",
-        error: null,
-      });
-
-      try {
-        const deleted =
-          projectService.delete(id);
-
-        if (!deleted) {
-          throw new Error(
-            "PROJECT_NOT_FOUND"
-          );
-        }
-
-        set((state) => ({
-          projects: state.projects.filter(
-            (project) =>
-              project.id !== id
-          ),
-
-          selectedProject:
-            state.selectedProject?.id === id
-              ? null
-              : state.selectedProject,
-
-          status: "success",
-        }));
-      } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : "UNKNOWN_ERROR";
-
-        set({
-          status: "error",
-          error: message,
-        });
-      }
-    },
-
-    selectProject: (id) => {
-      const project =
-        get().projects.find(
-          (project) => project.id === id
-        ) ?? null;
-
-      set({
-        selectedProject: project,
-      });
-    },
-
-    getProjectById: (id) => {
-      return (
-        get().projects.find(
-          (project) => project.id === id
-        ) ?? null
-      );
-    },
-
-    clearSelection: () =>
-      set({
-        selectedProject: null,
-      }),
-
-    clearError: () =>
-      set({
-        error: null,
-      }),
-  }));
+  clearError: () => set({ error: null }),
+}));

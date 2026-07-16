@@ -3,25 +3,17 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 
 import { Modal } from "../../../components/Modal";
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
+import { projectSchema, type ProjectFormValues } from "../schemas/project.schema";
 import type { Project } from "../../../types/project.types";
-
-const projectSchema = z.object({
-  name: z.string().min(1, "Project name is required"),
-  description: z.string().optional(),
-  color: z.string().regex(/^#[0-9a-f]{6}$/i, "Invalid color format"),
-});
-
-type ProjectFormData = z.infer<typeof projectSchema>;
 
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ProjectFormData) => void;
+  onSubmit: (data: ProjectFormValues) => void;
   initialData?: Project | null;
   isLoading?: boolean;
 }
@@ -50,7 +42,7 @@ export function ProjectModal({
     reset,
     watch,
     formState: { errors, isDirty, isValid },
-  } = useForm<ProjectFormData>({
+  } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
       name: "",
@@ -77,7 +69,7 @@ export function ProjectModal({
     }
   }, [isOpen, initialData, reset]);
 
-  const isEdit = !!initialData;
+  const isEdit = Boolean(initialData);
 
   return (
     <Modal
@@ -95,7 +87,7 @@ export function ProjectModal({
         />
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700">Project Color</label>
+          <label className="text-sm font-medium text-[var(--color-text)]">Project Color</label>
           <div className="flex flex-wrap gap-2">
             {COLORS.map((color) => (
               <label key={color} className="cursor-pointer">
@@ -108,7 +100,7 @@ export function ProjectModal({
                 <div
                   className={`h-8 w-8 rounded-full border-2 transition-all ${
                     selectedColor === color
-                      ? "border-gray-900 ring-2 ring-offset-2"
+                      ? "border-[var(--color-text)] ring-2 ring-offset-2 ring-[var(--color-primary)]"
                       : "border-transparent hover:scale-110"
                   }`}
                   style={{ backgroundColor: color }}
@@ -117,23 +109,23 @@ export function ProjectModal({
             ))}
           </div>
           {errors.color && (
-            <p className="text-xs text-red-500">{errors.color.message}</p>
+            <p className="text-xs text-[var(--color-danger)]">{errors.color.message}</p>
           )}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="description" className="text-sm font-medium text-gray-700">
+          <label htmlFor="description" className="text-sm font-medium text-[var(--color-text)]">
             Description
           </label>
           <textarea
             id="description"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-2 focus:outline-blue-600"
+            className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-2 focus:outline-[var(--color-primary)]"
             placeholder="What's this project about?"
             rows={3}
             {...register("description")}
           />
           {errors.description && (
-            <p className="text-xs text-red-500">{errors.description.message}</p>
+            <p className="text-xs text-[var(--color-danger)]">{errors.description.message}</p>
           )}
         </div>
 

@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { FiCheckCircle, FiXCircle, FiInfo, FiX } from "react-icons/fi";
 
 type ToastType = "success" | "error" | "info";
 
@@ -18,10 +19,10 @@ const toastStyles: Record<ToastType, string> = {
   info: "bg-blue-50 border-blue-500 text-blue-800",
 };
 
-const toastIcons: Record<ToastType, string> = {
-  success: "✅",
-  error: "❌",
-  info: "ℹ️",
+const toastIcons: Record<ToastType, ReactNode> = {
+  success: <FiCheckCircle size={20} aria-hidden="true" />,
+  error: <FiXCircle size={20} aria-hidden="true" />,
+  info: <FiInfo size={20} aria-hidden="true" />,
 };
 
 export function Toast({ type, message, duration = 3000, onClose }: ToastProps) {
@@ -44,7 +45,7 @@ export function Toast({ type, message, duration = 3000, onClose }: ToastProps) {
         className={`flex items-center gap-3 rounded-lg border-l-4 px-4 py-3 shadow-lg ${toastStyles[type]}`}
         role="alert"
       >
-        <span className="text-xl">{toastIcons[type]}</span>
+        {toastIcons[type]}
         <p className="text-sm font-medium">{message}</p>
         <button
           onClick={() => {
@@ -54,9 +55,7 @@ export function Toast({ type, message, duration = 3000, onClose }: ToastProps) {
           className="ml-2 text-gray-400 hover:text-gray-600"
           aria-label="Close toast"
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <FiX size={16} aria-hidden="true" />
         </button>
       </div>
     </div>,
