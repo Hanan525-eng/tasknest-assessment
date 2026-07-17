@@ -6,50 +6,11 @@ import type {
   UpdateProjectData,
 } from "../types/project.types";
 
-/**
- * project.service.ts
- * -----------------------------------------------------------------------
- * Handles all Project CRUD operations using localStorage.
- *
- * The rest of the application never talks directly to localStorage.
- * If the application later moves to a real backend, only this file
- * needs to change.
- * -----------------------------------------------------------------------
- */
-
 const PROJECTS_KEY = "tasknest_projects";
 
-/**
- * Default project colors.
- * Each new project gets the first unused color.
- */
-const PROJECT_COLORS = [
-  "#2563eb", // Blue
-  "#7c3aed", // Purple
-  "#dc2626", // Red
-  "#16a34a", // Green
-  "#d97706", // Amber
-  "#db2777", // Pink
-  "#0891b2", // Cyan
-];
-
-interface ProjectService {
-  getAll(): Project[];
-  getById(id: string): Project | null;
-  create(data: CreateProjectData): Project;
-  update(id: string, data: UpdateProjectData): Project | null;
-  delete(id: string): boolean;
-}
-
-/* ------------------------------------------------------------------ */
-/* Helpers */
-/* ------------------------------------------------------------------ */
-
-function getStoredProjects(): Project[] {
+function getAllStored(): Project[] {
   const raw = localStorage.getItem(PROJECTS_KEY);
-
   if (!raw) return [];
-
   try {
     return JSON.parse(raw) as Project[];
   } catch {
@@ -57,7 +18,7 @@ function getStoredProjects(): Project[] {
   }
 }
 
-function saveStoredProjects(projects: Project[]): void {
+function saveAll(projects: Project[]): void {
   localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
 }
 
@@ -65,91 +26,48 @@ function generateId(): string {
   return crypto.randomUUID();
 }
 
-function getDefaultColor(projects: Project[]): string {
-  const usedColors = projects.map((project) => project.color);
-
-  const availableColor = PROJECT_COLORS.find(
-    (color) => !usedColors.includes(color)
-  );
-
-  return (
-    availableColor ??
-    PROJECT_COLORS[projects.length % PROJECT_COLORS.length]
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Service */
-/* ------------------------------------------------------------------ */
-
-export const projectService: ProjectService = {
-  getAll(): Project[] {
-    return getStoredProjects();
+export const projectService = {
+  getByOwner(ownerId: string): Project[] {
+    return getAllStored().filter((p) => p.ownerId === ownerId);
   },
 
   getById(id: string): Project | null {
-    const projects = getStoredProjects();
-
-    return projects.find((project) => project.id === id) ?? null;
+    return getAllStored().find((p) => p.id === id) ?? null;
   },
 
-  create(data: CreateProjectData): Project {
-    const projects = getStoredProjects();
-
-    const now = new Date().toISOString();
+  create(ownerId: string, data: CreateProjectData): Project {
+    const projects = getAllStored();
 
     const newProject: Project = {
       id: generateId(),
-      ...data,
-      color: data.color || getDefaultColor(projects),
-      createdAt: now,
-      updatedAt: now,
+      ownerId,
+      name: data.name,
+      description: data.description,
+      color: data.color,
+      createdAt: new Date().toISOString(),
     };
 
-    saveStoredProjects([...projects, newProject]);
-
+    saveAll([...projects, newProject]);
     return newProject;
   },
 
-  update(id: string, data: UpdateProjectData): Project | null {
-    const projects = getStoredProjects();
+  update(id: string, data: UpdateProjectData): Project {
+    const projects = getAllStored();
+    const index = projects.findIndex((p) => p.id === id);
 
-    const existingProject = projects.find(
-      (project) => project.id === id
-    );
-
-    if (!existingProject) {
-      return null;
+    if (index === -1) {
+      throw new Error("PROJECT_NOT_FOUND");
     }
 
-    const updatedProject: Project = {
-      ...existingProject,
-      ...data,
-      updatedAt: new Date().toISOString(),
-    };
+    const updated: Project = { ...projects[index], ...data };
+    projects[index] = updated;
+    saveAll(projects);
 
-    const updatedProjects = projects.map((project) =>
-      project.id === id ? updatedProject : project
-    );
-
-    saveStoredProjects(updatedProjects);
-
-    return updatedProject;
+    return updated;
   },
 
-  delete(id: string): boolean {
-    const projects = getStoredProjects();
-
-    const filteredProjects = projects.filter(
-      (project) => project.id !== id
-    );
-
-    if (filteredProjects.length === projects.length) {
-      return false;
-    }
-
-    saveStoredProjects(filteredProjects);
-
-    return true;
+  delete(id: string): void {
+    const projects = getAllStored().filter((p) => p.id !== id);
+    saveAll(projects);
   },
 };

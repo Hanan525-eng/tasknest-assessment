@@ -2,18 +2,17 @@
 
 export interface Project {
   id: string;
-
-  // Display name shown in the dashboard
+  ownerId: string;
   name: string;
-
   description: string;
-
-  // Accent color used for the project card
   color: string;
-
   createdAt: string;
-  updatedAt: string;
 }
 
-export type CreateProjectData = Omit<Project, "id" | "createdAt" | "updatedAt">;
+export interface CreateProjectData {
+  name: string;
+  description: string;
+  color: string;
+}
+
 export type UpdateProjectData = Partial<CreateProjectData>;
