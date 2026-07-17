@@ -6,11 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button, Input } from "../../../components";
+import { AuthLayout } from "../../../components/AuthLayout";
 import { useAuthStore } from "../../../stores/auth.store";
-import {
-  loginSchema,
-  type LoginFormValues,
-} from "../schemas/login.schema";
+import { loginSchema, type LoginFormValues } from "../schemas/login.schema";
 
 /**
  * LoginPage
@@ -23,7 +21,6 @@ import {
 
 function LoginPage() {
   const navigate = useNavigate();
-
   const { login, status, error, clearError } = useAuthStore();
 
   const {
@@ -48,89 +45,57 @@ function LoginPage() {
   const isLoading = status === "loading";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--color-background) px-4">
-      <div
-        className="
-          w-full
-          max-w-md
-          rounded-(--radius-lg)
-          border
-          border-(--color-border)
-          bg-(--color-surface)
-          p-8
-          shadow-(--shadow-md)
-        "
-      >
-        <h1 className="mb-2 text-2xl font-semibold text-(--color-text)">
-          Log in to TaskNest
-        </h1>
+    <AuthLayout>
+      <h1 className="mb-1 text-3xl font-bold text-[var(--color-text)]">Welcome Back!</h1>
+      <p className="mb-8 text-sm text-[var(--color-text-muted)]">
+        Please enter your login details below
+      </p>
 
-        <p className="mb-6 text-sm text-(--color-text-muted)">
-          Manage your projects and tasks in one place.
-        </p>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+        <Input
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          autoComplete="email"
+          error={errors.email?.message}
+          {...register("email")}
+        />
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-          className="flex flex-col gap-4"
-        >
-          <Input
-            label="Email"
-            type="email"
-            autoComplete="email"
-            error={errors.email?.message}
-            {...register("email")}
-          />
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          autoComplete="current-password"
+          error={errors.password?.message}
+          {...register("password")}
+        />
 
-          <Input
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            error={errors.password?.message}
-            {...register("password")}
-          />
-
-          {error && (
-            <div
-              role="alert"
-              className="
-                rounded-(--radius-sm)
-                border
-                border-(--color-danger)
-                bg-red-50
-                px-3
-                py-2
-                text-sm
-                text-(--color-danger)
-              "
-            >
-              {error === "INVALID_CREDENTIALS"
-                ? "Invalid email or password."
-                : "Something went wrong. Please try again."}
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            isLoading={isLoading}
-            className="mt-2 w-full"
+        {error && (
+          <div
+            role="alert"
+            className="rounded-[var(--radius-sm)] border border-[var(--color-danger)] bg-red-50 px-3 py-2 text-sm text-[var(--color-danger)]"
           >
-            Log in
-          </Button>
-        </form>
+            {error === "INVALID_CREDENTIALS"
+              ? "Invalid email or password."
+              : "Something went wrong. Please try again."}
+          </div>
+        )}
 
-        <p className="mt-6 text-center text-sm text-(--color-text-muted)">
-          Don&apos;t have an account?{" "}
-          <Link
-            to="/auth/register"
-            className="font-medium text-(--color-primary) hover:underline"
-          >
-            Create one
-          </Link>
-        </p>
-      </div>
-    </div>
+        <Button type="submit" isLoading={isLoading} className="mt-2 w-full">
+          Sign in
+        </Button>
+      </form>
+
+      <p className="mt-8 text-center text-sm text-[var(--color-text-muted)]">
+        Don&apos;t have an account?{" "}
+        <Link to="/auth/register" className="font-medium text-[var(--color-primary)] hover:underline">
+          Sign Up
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }
 
 export default LoginPage;
+
+

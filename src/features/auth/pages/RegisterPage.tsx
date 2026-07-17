@@ -6,11 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button, Input } from "../../../components";
+import { AuthLayout } from "../../../components/AuthLayout";
 import { useAuthStore } from "../../../stores/auth.store";
-import {
-  registerSchema,
-  type RegisterFormValues,
-} from "../schemas/register.schema";
+import { registerSchema, type RegisterFormValues } from "../schemas/register.schema";
 
 /**
  * RegisterPage
@@ -22,13 +20,7 @@ import {
 
 function RegisterPage() {
   const navigate = useNavigate();
-
-  const {
-    register: registerUser,
-    status,
-    error,
-    clearError,
-  } = useAuthStore();
+  const { register: registerUser, status, error, clearError } = useAuthStore();
 
   const {
     register,
@@ -52,105 +44,74 @@ function RegisterPage() {
   const isLoading = status === "loading";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--color-background) px-4">
-      <div
-        className="
-          w-full
-          max-w-md
-          rounded-(--radius-lg)
-          border
-          border-(--color-border)
-          bg-(--color-surface)
-          p-8
-          shadow-(--shadow-md)
-        "
-      >
-        <h1 className="mb-2 text-2xl font-semibold text-(--color-text)">
-          Create your account
-        </h1>
+    <AuthLayout caption="Create an account to start organizing your projects and tasks.">
+      <h1 className="mb-1 text-3xl font-bold text-[var(--color-text)]">Create Account</h1>
+      <p className="mb-8 text-sm text-[var(--color-text-muted)]">
+        Fill in your details to get started
+      </p>
 
-        <p className="mb-6 text-sm text-(--color-text-muted)">
-          Start organizing your projects and tasks.
-        </p>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+        <Input
+          label="Full name"
+          type="text"
+          placeholder="Enter your full name"
+          autoComplete="name"
+          error={errors.name?.message}
+          {...register("name")}
+        />
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-          className="flex flex-col gap-4"
-        >
-          <Input
-            label="Full name"
-            type="text"
-            autoComplete="name"
-            error={errors.name?.message}
-            {...register("name")}
-          />
+        <Input
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          autoComplete="email"
+          error={errors.email?.message}
+          {...register("email")}
+        />
 
-          <Input
-            label="Email"
-            type="email"
-            autoComplete="email"
-            error={errors.email?.message}
-            {...register("email")}
-          />
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          autoComplete="new-password"
+          error={errors.password?.message}
+          {...register("password")}
+        />
 
-          <Input
-            label="Password"
-            type="password"
-            autoComplete="new-password"
-            error={errors.password?.message}
-            {...register("password")}
-          />
+        <Input
+          label="Confirm password"
+          type="password"
+          placeholder="Re-enter your password"
+          autoComplete="new-password"
+          error={errors.confirmPassword?.message}
+          {...register("confirmPassword")}
+        />
 
-          <Input
-            label="Confirm password"
-            type="password"
-            autoComplete="new-password"
-            error={errors.confirmPassword?.message}
-            {...register("confirmPassword")}
-          />
-
-          {error && (
-            <div
-              role="alert"
-              className="
-                rounded-(--radius-sm)
-                border
-                border-(--color-danger)
-                bg-red-50
-                px-3
-                py-2
-                text-sm
-                text-(--color-danger)
-              "
-            >
-              {error === "EMAIL_ALREADY_EXISTS"
-                ? "An account with this email already exists."
-                : "Something went wrong. Please try again."}
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            isLoading={isLoading}
-            className="mt-2 w-full"
+        {error && (
+          <div
+            role="alert"
+            className="rounded-[var(--radius-sm)] border border-[var(--color-danger)] bg-red-50 px-3 py-2 text-sm text-[var(--color-danger)]"
           >
-            Create account
-          </Button>
-        </form>
+            {error === "EMAIL_ALREADY_EXISTS"
+              ? "An account with this email already exists."
+              : "Something went wrong. Please try again."}
+          </div>
+        )}
 
-        <p className="mt-6 text-center text-sm text-(--color-text-muted)">
-          Already have an account?{" "}
-          <Link
-            to="/auth/login"
-            className="font-medium text-(--color-primary) hover:underline"
-          >
-            Log in
-          </Link>
-        </p>
-      </div>
-    </div>
+        <Button type="submit" isLoading={isLoading} className="mt-2 w-full">
+          Create account
+        </Button>
+      </form>
+
+      <p className="mt-8 text-center text-sm text-[var(--color-text-muted)]">
+        Already have an account?{" "}
+        <Link to="/auth/login" className="font-medium text-[var(--color-primary)] hover:underline">
+          Sign in
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }
 
 export default RegisterPage;
+
