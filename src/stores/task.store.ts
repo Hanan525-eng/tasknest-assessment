@@ -1,3 +1,5 @@
+// src/stores/task.store.ts
+
 import { create } from "zustand";
 import type {
   Task,
@@ -15,10 +17,6 @@ interface TaskState {
   createTask: (projectId: string, data: CreateTaskData) => void;
   updateTask: (id: string, data: UpdateTaskData) => void;
   deleteTask: (id: string) => void;
-  /**
-   * Convenience action for the quick status-change dropdown, so callers
-   * don't need to build a full UpdateTaskData object just to flip status.
-   */
   updateTaskStatus: (id: string, status: TaskStatus) => void;
 }
 

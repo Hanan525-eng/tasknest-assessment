@@ -65,9 +65,6 @@ export const taskService = {
     saveAll(tasks);
   },
 
-  /**
-   * Cascading delete used when a project is removed.
-   */
   deleteByProject(projectId: string): void {
     const tasks = getAllStored().filter((t) => t.projectId !== projectId);
     saveAll(tasks);
