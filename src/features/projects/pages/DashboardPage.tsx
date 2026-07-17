@@ -1,11 +1,14 @@
 // // src/features/projects/pages/DashboardPage.tsx
 
+
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FolderOpen } from "lucide-react";
 import { useAuthStore } from "../../../stores/auth.store";
 import { useProjectStore } from "../../../stores/project.store";
 import { Button } from "../../../components/Button";
 import { EmptyState } from "../../../components/EmptyState";
+import { CardSkeleton } from "../../../components/Skeleton";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import { ProjectCard } from "../components/ProjectCard";
 import { ProjectFormModal } from "../components/ProjectFormModal";
@@ -61,8 +64,17 @@ function DashboardPage() {
         <Button onClick={openCreateForm}>{t("dashboard.newProject")}</Button>
       </div>
 
+      {isLoading && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      )}
+
       {!isLoading && projects.length === 0 && (
         <EmptyState
+          icon={<FolderOpen size={24} />}
           title={t("dashboard.emptyTitle")}
           description={t("dashboard.emptyDescription")}
           action={<Button onClick={openCreateForm}>{t("dashboard.newProject")}</Button>}
@@ -103,4 +115,3 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
-

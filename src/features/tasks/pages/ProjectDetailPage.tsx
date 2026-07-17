@@ -3,17 +3,22 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ListTodo } from "lucide-react";
 
 import { useAuthStore } from "../../../stores/auth.store";
 import { useProjectStore } from "../../../stores/project.store";
 import { useTaskStore } from "../../../stores/task.store";
 import { Button } from "../../../components/Button";
 import { EmptyState } from "../../../components/EmptyState";
+import { CardSkeleton } from "../../../components/Skeleton";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
 import { TaskListItem } from "../components/TaskListItem";
 import { TaskFormModal } from "../components/TaskFormModal";
+import { KanbanBoard } from "../components/KanbanBoard";
 import type { Task } from "../../../types/task.types";
 import type { TaskFormValues } from "../schemas/task.schema";
+
+type TaskView = "list" | "kanban";
 
 function ProjectDetailPage() {
   const { t } = useTranslation();
@@ -24,6 +29,7 @@ function ProjectDetailPage() {
   const { tasks, isLoading, fetchTasks, createTask, updateTask, deleteTask, updateTaskStatus } =
     useTaskStore();
 
+  const [view, setView] = useState<TaskView>("list");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
@@ -79,7 +85,7 @@ function ProjectDetailPage() {
         {t("common.backToDashboard")}
       </Link>
 
-      <header className="mb-8 flex items-center justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           {project && (
             <span
@@ -96,15 +102,54 @@ function ProjectDetailPage() {
         <Button onClick={openCreateForm}>{t("task.newTask")}</Button>
       </header>
 
+      {tasks.length > 0 && (
+        <div className="mb-4 inline-flex rounded-sm border border-(--color-border) p-0.5">
+          <button
+            type="button"
+            onClick={() => setView("list")}
+            aria-pressed={view === "list"}
+            className={
+              "rounded-sm px-3 py-1 text-sm font-medium " +
+              (view === "list"
+                ? "bg-(--color-primary) text-white"
+                : "text-(--color-text-muted)")
+            }
+          >
+            {t("task.view.list")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("kanban")}
+            aria-pressed={view === "kanban"}
+            className={
+              "rounded-sm px-3 py-1 text-sm font-medium " +
+              (view === "kanban"
+                ? "bg-(--color-primary) text-white"
+                : "text-(--color-text-muted)")
+            }
+          >
+            {t("task.view.kanban")}
+          </button>
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="flex flex-col gap-3">
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      )}
+
       {!isLoading && tasks.length === 0 && (
         <EmptyState
+          icon={<ListTodo size={24} />}
           title={t("task.emptyTitle")}
           description={t("task.emptyDescription")}
           action={<Button onClick={openCreateForm}>{t("task.newTask")}</Button>}
         />
       )}
 
-      {tasks.length > 0 && (
+      {!isLoading && tasks.length > 0 && view === "list" && (
         <div className="flex flex-col gap-3">
           {tasks.map((task) => (
             <TaskListItem
@@ -116,6 +161,15 @@ function ProjectDetailPage() {
             />
           ))}
         </div>
+      )}
+
+      {!isLoading && tasks.length > 0 && view === "kanban" && (
+        <KanbanBoard
+          tasks={tasks}
+          onStatusChange={updateTaskStatus}
+          onEdit={openEditForm}
+          onDelete={setDeletingTask}
+        />
       )}
 
       <TaskFormModal

@@ -1,11 +1,14 @@
 // src/components/Badge.tsx
 
+
 import type { HTMLAttributes } from "react";
 
 type BadgeVariant = "default" | "success" | "warning" | "danger" | "primary";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
+  /** Shows a small colored dot before the label, matching the badge's color. */
+  dot?: boolean;
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
@@ -18,6 +21,7 @@ const variantStyles: Record<BadgeVariant, string> = {
 
 export function Badge({
   variant = "default",
+  dot = false,
   className = "",
   children,
   ...rest
@@ -25,13 +29,20 @@ export function Badge({
   return (
     <span
       className={
-        "inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium " +
+        "inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium " +
         variantStyles[variant] +
         ` ${className}`
       }
       {...rest}
     >
+      {dot && (
+        <span
+          className="h-1.5 w-1.5 shrink-0 rounded-full bg-current"
+          aria-hidden="true"
+        />
+      )}
       {children}
     </span>
   );
-}
+} 
+

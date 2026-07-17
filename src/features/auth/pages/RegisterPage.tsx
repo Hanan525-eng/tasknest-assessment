@@ -1,7 +1,6 @@
 // // src/features/auth/pages/RegisterPage.tsx
 
 
-// src/features/auth/pages/RegisterPage.tsx
 
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";

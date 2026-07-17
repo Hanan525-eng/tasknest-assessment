@@ -1,4 +1,4 @@
-// src/components/Card.tsx
+// // src/components/Card.tsx
 
 import type { HTMLAttributes } from "react";
 
@@ -17,7 +17,7 @@ export function Card({
       className={
         "rounded-md border border-(--color-border) bg-(--color-surface) p-4 shadow-[var(--shadow-sm)] " +
         (interactive
-          ? "cursor-pointer transition-shadow hover:shadow-[var(--shadow-md)] "
+          ? "cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] "
           : "") +
         className
       }
@@ -27,3 +27,5 @@ export function Card({
     </div>
   );
 }
+
+

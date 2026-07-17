@@ -27,6 +27,18 @@ export const taskService = {
     return getAllStored().filter((t) => t.projectId === projectId);
   },
 
+  /**
+   * Lightweight derived read used by ProjectCard to show "3 tasks, 2 completed"
+   * without the Dashboard needing to load full task state for every project.
+   */
+  getCountsByProject(projectId: string): { total: number; completed: number } {
+    const tasks = getAllStored().filter((t) => t.projectId === projectId);
+    return {
+      total: tasks.length,
+      completed: tasks.filter((t) => t.status === "done").length,
+    };
+  },
+
   create(projectId: string, data: CreateTaskData): Task {
     const tasks = getAllStored();
 
@@ -65,8 +77,12 @@ export const taskService = {
     saveAll(tasks);
   },
 
+  /**
+   * Cascading delete used when a project is removed.
+   */
   deleteByProject(projectId: string): void {
     const tasks = getAllStored().filter((t) => t.projectId !== projectId);
     saveAll(tasks);
   },
 };
+

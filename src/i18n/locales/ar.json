@@ -34,13 +34,18 @@
   },
   "dashboard": {
     "title": "لوحة التحكم",
+    "welcomeBack": "أهلاً بعودتك، {{name}}",
     "loggedInAs": "مسجل الدخول باسم {{name}} ({{email}})",
     "yourProjects": "مشاريعك",
     "newProject": "مشروع جديد",
+    "searchPlaceholder": "ابحث في المشاريع...",
+    "noResults": "لا توجد مشاريع تطابق بحثك.",
     "emptyTitle": "لا توجد مشاريع بعد",
     "emptyDescription": "أنشئ أول مشروع لك لتبدأ في تنظيم المهام."
   },
   "project": {
+    "taskCount": "المهام: {{count}}",
+    "completedCount": "المكتملة: {{count}}",
     "form": {
       "createTitle": "مشروع جديد",
       "editTitle": "تعديل المشروع",
@@ -60,8 +65,22 @@
     "emptyTitle": "لا توجد مهام",
     "emptyDescription": "أنشئ أول مهمة لهذا المشروع.",
     "due": "الاستحقاق {{date}}",
-    "status": { "todo": "قيد الانتظار", "inProgress": "قيد التنفيذ", "done": "مكتملة" },
-    "priority": { "low": "منخفضة", "medium": "متوسطة", "high": "عالية" },
+    "searchPlaceholder": "ابحث في المهام...",
+    "noResults": "لا توجد مهام تطابق بحثك.",
+    "view": {
+      "list": "قائمة",
+      "kanban": "كانبان"
+    },
+    "status": {
+      "todo": "قيد الانتظار",
+      "inProgress": "قيد التنفيذ",
+      "done": "مكتملة"
+    },
+    "priority": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية"
+    },
     "form": {
       "createTitle": "مهمة جديدة",
       "editTitle": "تعديل المهمة",
@@ -79,15 +98,48 @@
     }
   },
   "validation": {
-    "email": { "required": "البريد الإلكتروني مطلوب.", "invalid": "من فضلك أدخل بريدًا إلكترونيًا صحيحًا." },
-    "password": { "required": "كلمة المرور مطلوبة.", "minLength": "يجب ألا تقل كلمة المرور عن 6 أحرف." },
-    "confirmPassword": { "required": "من فضلك أكدي كلمة المرور.", "mismatch": "كلمتا المرور غير متطابقتين." },
-    "name": { "required": "الاسم مطلوب." },
-    "projectName": { "required": "اسم المشروع مطلوب." },
-    "description": { "maxLength": "الوصف طويل جدًا." },
-    "color": { "required": "من فضلك اختاري لونًا." },
-    "taskTitle": { "required": "عنوان المهمة مطلوب." },
-    "dueDate": { "required": "تاريخ الاستحقاق مطلوب." }
+    "email": {
+      "required": "البريد الإلكتروني مطلوب.",
+      "invalid": "من فضلك أدخل بريدًا إلكترونيًا صحيحًا."
+    },
+    "password": {
+      "required": "كلمة المرور مطلوبة.",
+      "minLength": "يجب ألا تقل كلمة المرور عن 6 أحرف."
+    },
+    "confirmPassword": {
+      "required": "من فضلك أكدي كلمة المرور.",
+      "mismatch": "كلمتا المرور غير متطابقتين."
+    },
+    "name": {
+      "required": "الاسم مطلوب."
+    },
+    "projectName": {
+      "required": "اسم المشروع مطلوب."
+    },
+    "description": {
+      "maxLength": "الوصف طويل جدًا."
+    },
+    "color": {
+      "required": "من فضلك اختاري لونًا."
+    },
+    "taskTitle": {
+      "required": "عنوان المهمة مطلوب."
+    },
+    "dueDate": {
+      "required": "تاريخ الاستحقاق مطلوب."
+    }
   },
-  "language": { "english": "English", "arabic": "العربية" }
+  "language": {
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "toast": {
+    "projectCreated": "تم إنشاء المشروع",
+    "projectUpdated": "تم تحديث المشروع",
+    "projectDeleted": "تم حذف المشروع",
+    "taskCreated": "تم إنشاء المهمة",
+    "taskUpdated": "تم تحديث المهمة",
+    "taskDeleted": "تم حذف المهمة",
+    "taskStatusUpdated": "تم تحديث حالة المهمة"
+  }
 }

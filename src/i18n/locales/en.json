@@ -1,4 +1,3 @@
-
 {
   "common": {
     "cancel": "Cancel",
@@ -35,13 +34,18 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "welcomeBack": "Welcome back, {{name}}",
     "loggedInAs": "Logged in as {{name}} ({{email}})",
     "yourProjects": "Your projects",
     "newProject": "New project",
+    "searchPlaceholder": "Search projects...",
+    "noResults": "No projects match your search.",
     "emptyTitle": "No Projects Yet",
     "emptyDescription": "Create your first project to start organizing tasks."
   },
   "project": {
+    "taskCount": "Tasks: {{count}}",
+    "completedCount": "Completed: {{count}}",
     "form": {
       "createTitle": "New project",
       "editTitle": "Edit project",
@@ -61,8 +65,22 @@
     "emptyTitle": "No Tasks",
     "emptyDescription": "Create your first task for this project.",
     "due": "Due {{date}}",
-    "status": { "todo": "To Do", "inProgress": "In Progress", "done": "Done" },
-    "priority": { "low": "Low", "medium": "Medium", "high": "High" },
+    "searchPlaceholder": "Search tasks...",
+    "noResults": "No tasks match your search.",
+    "view": {
+      "list": "List",
+      "kanban": "Kanban"
+    },
+    "status": {
+      "todo": "To Do",
+      "inProgress": "In Progress",
+      "done": "Done"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
     "form": {
       "createTitle": "New task",
       "editTitle": "Edit task",
@@ -80,15 +98,48 @@
     }
   },
   "validation": {
-    "email": { "required": "Email is required.", "invalid": "Please enter a valid email address." },
-    "password": { "required": "Password is required.", "minLength": "Password must be at least 6 characters." },
-    "confirmPassword": { "required": "Please confirm your password.", "mismatch": "Passwords do not match." },
-    "name": { "required": "Name is required." },
-    "projectName": { "required": "Project name is required." },
-    "description": { "maxLength": "Description is too long." },
-    "color": { "required": "Please select a color." },
-    "taskTitle": { "required": "Task title is required." },
-    "dueDate": { "required": "Due date is required." }
+    "email": {
+      "required": "Email is required.",
+      "invalid": "Please enter a valid email address."
+    },
+    "password": {
+      "required": "Password is required.",
+      "minLength": "Password must be at least 6 characters."
+    },
+    "confirmPassword": {
+      "required": "Please confirm your password.",
+      "mismatch": "Passwords do not match."
+    },
+    "name": {
+      "required": "Name is required."
+    },
+    "projectName": {
+      "required": "Project name is required."
+    },
+    "description": {
+      "maxLength": "Description is too long."
+    },
+    "color": {
+      "required": "Please select a color."
+    },
+    "taskTitle": {
+      "required": "Task title is required."
+    },
+    "dueDate": {
+      "required": "Due date is required."
+    }
   },
-  "language": { "english": "English", "arabic": "العربية" }
+  "language": {
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "toast": {
+    "projectCreated": "Project created",
+    "projectUpdated": "Project updated",
+    "projectDeleted": "Project deleted",
+    "taskCreated": "Task created",
+    "taskUpdated": "Task updated",
+    "taskDeleted": "Task deleted",
+    "taskStatusUpdated": "Task status updated"
+  }
 }
