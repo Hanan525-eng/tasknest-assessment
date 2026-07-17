@@ -1,6 +1,7 @@
 // src/features/projects/components/ProjectCard.tsx
 
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card } from "../../../components/Card";
 import { Button } from "../../../components/Button";
 import type { Project } from "../../../types/project.types";
@@ -12,6 +13,7 @@ export interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -37,14 +39,18 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
         </p>
       )}
 
-      <div className="mt-2 flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="mt-2 flex justify-end gap-2"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Button type="button" variant="ghost" size="sm" onClick={() => onEdit(project)}>
-          Edit
+          {t("common.edit")}
         </Button>
         <Button type="button" variant="ghost" size="sm" onClick={() => onDelete(project)}>
-          Delete
+          {t("common.delete")}
         </Button>
       </div>
     </Card>
   );
 }
+

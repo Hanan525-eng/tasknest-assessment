@@ -1,0 +1,93 @@
+{
+  "common": {
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "logOut": "تسجيل الخروج",
+    "backToDashboard": "الرجوع للوحة التحكم"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول إلى TaskNest",
+      "subtitle": "إدارة مشاريعك ومهامك في مكان واحد.",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "createOne": "أنشئ حسابًا",
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "genericError": "حدث خطأ ما. حاول مرة أخرى."
+    },
+    "register": {
+      "title": "إنشاء حسابك",
+      "subtitle": "ابدأ بتنظيم مشاريعك ومهامك.",
+      "nameLabel": "الاسم الكامل",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "submit": "إنشاء الحساب",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "logIn": "تسجيل الدخول",
+      "emailExists": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
+      "genericError": "حدث خطأ ما. حاول مرة أخرى."
+    }
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "loggedInAs": "مسجل الدخول باسم {{name}} ({{email}})",
+    "yourProjects": "مشاريعك",
+    "newProject": "مشروع جديد",
+    "emptyTitle": "لا توجد مشاريع بعد",
+    "emptyDescription": "أنشئ أول مشروع لك لتبدأ في تنظيم المهام."
+  },
+  "project": {
+    "form": {
+      "createTitle": "مشروع جديد",
+      "editTitle": "تعديل المشروع",
+      "nameLabel": "اسم المشروع",
+      "descriptionLabel": "الوصف",
+      "colorLabel": "اللون",
+      "create": "إنشاء المشروع",
+      "save": "حفظ التعديلات"
+    },
+    "delete": {
+      "title": "حذف المشروع",
+      "message": "هل أنت متأكدة من حذف \"{{name}}\"؟ سيتم حذف كل المهام التابعة له أيضًا. لا يمكن التراجع عن هذا الإجراء."
+    }
+  },
+  "task": {
+    "newTask": "مهمة جديدة",
+    "emptyTitle": "لا توجد مهام",
+    "emptyDescription": "أنشئ أول مهمة لهذا المشروع.",
+    "due": "الاستحقاق {{date}}",
+    "status": { "todo": "قيد الانتظار", "inProgress": "قيد التنفيذ", "done": "مكتملة" },
+    "priority": { "low": "منخفضة", "medium": "متوسطة", "high": "عالية" },
+    "form": {
+      "createTitle": "مهمة جديدة",
+      "editTitle": "تعديل المهمة",
+      "titleLabel": "العنوان",
+      "descriptionLabel": "الوصف",
+      "statusLabel": "الحالة",
+      "priorityLabel": "الأولوية",
+      "dueDateLabel": "تاريخ الاستحقاق",
+      "create": "إنشاء المهمة",
+      "save": "حفظ التعديلات"
+    },
+    "delete": {
+      "title": "حذف المهمة",
+      "message": "هل أنت متأكدة من حذف \"{{title}}\"؟ لا يمكن التراجع عن هذا الإجراء."
+    }
+  },
+  "validation": {
+    "email": { "required": "البريد الإلكتروني مطلوب.", "invalid": "من فضلك أدخل بريدًا إلكترونيًا صحيحًا." },
+    "password": { "required": "كلمة المرور مطلوبة.", "minLength": "يجب ألا تقل كلمة المرور عن 6 أحرف." },
+    "confirmPassword": { "required": "من فضلك أكدي كلمة المرور.", "mismatch": "كلمتا المرور غير متطابقتين." },
+    "name": { "required": "الاسم مطلوب." },
+    "projectName": { "required": "اسم المشروع مطلوب." },
+    "description": { "maxLength": "الوصف طويل جدًا." },
+    "color": { "required": "من فضلك اختاري لونًا." },
+    "taskTitle": { "required": "عنوان المهمة مطلوب." },
+    "dueDate": { "required": "تاريخ الاستحقاق مطلوب." }
+  },
+  "language": { "english": "English", "arabic": "العربية" }
+}

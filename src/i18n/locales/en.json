@@ -1,0 +1,94 @@
+
+{
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "logOut": "Log out",
+    "backToDashboard": "Back to dashboard"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in to TaskNest",
+      "subtitle": "Manage your projects and tasks in one place.",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Log in",
+      "noAccount": "Don't have an account?",
+      "createOne": "Create one",
+      "invalidCredentials": "Invalid email or password.",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Start organizing your projects and tasks.",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "logIn": "Log in",
+      "emailExists": "An account with this email already exists.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "loggedInAs": "Logged in as {{name}} ({{email}})",
+    "yourProjects": "Your projects",
+    "newProject": "New project",
+    "emptyTitle": "No Projects Yet",
+    "emptyDescription": "Create your first project to start organizing tasks."
+  },
+  "project": {
+    "form": {
+      "createTitle": "New project",
+      "editTitle": "Edit project",
+      "nameLabel": "Project name",
+      "descriptionLabel": "Description",
+      "colorLabel": "Color",
+      "create": "Create project",
+      "save": "Save changes"
+    },
+    "delete": {
+      "title": "Delete project",
+      "message": "Are you sure you want to delete \"{{name}}\"? All of its tasks will be deleted too. This action cannot be undone."
+    }
+  },
+  "task": {
+    "newTask": "New task",
+    "emptyTitle": "No Tasks",
+    "emptyDescription": "Create your first task for this project.",
+    "due": "Due {{date}}",
+    "status": { "todo": "To Do", "inProgress": "In Progress", "done": "Done" },
+    "priority": { "low": "Low", "medium": "Medium", "high": "High" },
+    "form": {
+      "createTitle": "New task",
+      "editTitle": "Edit task",
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "statusLabel": "Status",
+      "priorityLabel": "Priority",
+      "dueDateLabel": "Due date",
+      "create": "Create task",
+      "save": "Save changes"
+    },
+    "delete": {
+      "title": "Delete task",
+      "message": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone."
+    }
+  },
+  "validation": {
+    "email": { "required": "Email is required.", "invalid": "Please enter a valid email address." },
+    "password": { "required": "Password is required.", "minLength": "Password must be at least 6 characters." },
+    "confirmPassword": { "required": "Please confirm your password.", "mismatch": "Passwords do not match." },
+    "name": { "required": "Name is required." },
+    "projectName": { "required": "Project name is required." },
+    "description": { "maxLength": "Description is too long." },
+    "color": { "required": "Please select a color." },
+    "taskTitle": { "required": "Task title is required." },
+    "dueDate": { "required": "Due date is required." }
+  },
+  "language": { "english": "English", "arabic": "العربية" }
+}

@@ -1,6 +1,7 @@
-// src/features/projects/pages/DashboardPage.tsx
+// // src/features/projects/pages/DashboardPage.tsx
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../../../stores/auth.store";
 import { useProjectStore } from "../../../stores/project.store";
 import { Button } from "../../../components/Button";
@@ -12,7 +13,8 @@ import type { Project } from "../../../types/project.types";
 import type { ProjectFormValues } from "../schemas/project.schema";
 
 function DashboardPage() {
-  const { user, logout } = useAuthStore();
+  const { t } = useTranslation();
+  const { user } = useAuthStore();
   const { projects, isLoading, fetchProjects, createProject, updateProject, deleteProject } =
     useProjectStore();
 
@@ -51,32 +53,19 @@ function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-(--color-background) p-8">
-      <header className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-(--color-text)">Dashboard</h1>
-          {user && (
-            <p className="text-sm text-(--color-text-muted)">
-              Logged in as {user.name} ({user.email})
-            </p>
-          )}
-        </div>
-
-        <Button variant="secondary" onClick={logout}>
-          Log out
-        </Button>
-      </header>
-
+    <div>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-medium text-(--color-text)">Your projects</h2>
-        <Button onClick={openCreateForm}>New project</Button>
+        <h2 className="text-lg font-medium text-(--color-text)">
+          {t("dashboard.yourProjects")}
+        </h2>
+        <Button onClick={openCreateForm}>{t("dashboard.newProject")}</Button>
       </div>
 
       {!isLoading && projects.length === 0 && (
         <EmptyState
-          title="No Projects Yet"
-          description="Create your first project to start organizing tasks."
-          action={<Button onClick={openCreateForm}>New project</Button>}
+          title={t("dashboard.emptyTitle")}
+          description={t("dashboard.emptyDescription")}
+          action={<Button onClick={openCreateForm}>{t("dashboard.newProject")}</Button>}
         />
       )}
 
@@ -102,9 +91,10 @@ function DashboardPage() {
 
       <ConfirmDialog
         isOpen={Boolean(deletingProject)}
-        title="Delete project"
-        message={`Are you sure you want to delete "${deletingProject?.name}"? All of its tasks will be deleted too. This action cannot be undone.`}
-        confirmLabel="Delete"
+        title={t("project.delete.title")}
+        message={t("project.delete.message", { name: deletingProject?.name ?? "" })}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeletingProject(null)}
       />
@@ -113,3 +103,4 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
+

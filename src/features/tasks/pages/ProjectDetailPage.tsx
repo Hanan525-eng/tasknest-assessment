@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { useAuthStore } from "../../../stores/auth.store";
 import { useProjectStore } from "../../../stores/project.store";
@@ -15,6 +16,7 @@ import type { Task } from "../../../types/task.types";
 import type { TaskFormValues } from "../schemas/task.schema";
 
 function ProjectDetailPage() {
+  const { t } = useTranslation();
   const { projectId } = useParams<{ projectId: string }>();
 
   const { user } = useAuthStore();
@@ -68,9 +70,13 @@ function ProjectDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-(--color-background) p-8">
-      <Link to="/dashboard" className="mb-4 inline-block text-sm text-(--color-primary) hover:underline">
-        ← Back to dashboard
+    <div>
+      <Link
+        to="/dashboard"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-(--color-primary) hover:underline"
+      >
+        <span className="rtl:rotate-180" aria-hidden="true">←</span>
+        {t("common.backToDashboard")}
       </Link>
 
       <header className="mb-8 flex items-center justify-between">
@@ -83,18 +89,18 @@ function ProjectDetailPage() {
             />
           )}
           <h1 className="text-xl font-semibold text-(--color-text)">
-            {project?.name ?? "Project"}
+            {project?.name ?? ""}
           </h1>
         </div>
 
-        <Button onClick={openCreateForm}>New task</Button>
+        <Button onClick={openCreateForm}>{t("task.newTask")}</Button>
       </header>
 
       {!isLoading && tasks.length === 0 && (
         <EmptyState
-          title="No Tasks"
-          description="Create your first task for this project."
-          action={<Button onClick={openCreateForm}>New task</Button>}
+          title={t("task.emptyTitle")}
+          description={t("task.emptyDescription")}
+          action={<Button onClick={openCreateForm}>{t("task.newTask")}</Button>}
         />
       )}
 
@@ -121,9 +127,10 @@ function ProjectDetailPage() {
 
       <ConfirmDialog
         isOpen={Boolean(deletingTask)}
-        title="Delete task"
-        message={`Are you sure you want to delete "${deletingTask?.title}"? This action cannot be undone.`}
-        confirmLabel="Delete"
+        title={t("task.delete.title")}
+        message={t("task.delete.message", { title: deletingTask?.title ?? "" })}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeletingTask(null)}
       />
@@ -132,3 +139,4 @@ function ProjectDetailPage() {
 }
 
 export default ProjectDetailPage;
+

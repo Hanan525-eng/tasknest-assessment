@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { Modal } from "../../../components/Modal";
 import { Input } from "../../../components/Input";
@@ -25,6 +26,7 @@ export function ProjectFormModal({
   onSubmit,
   initialProject,
 }: ProjectFormModalProps) {
+  const { t } = useTranslation();
   const isEditing = Boolean(initialProject);
 
   const {
@@ -57,18 +59,28 @@ export function ProjectFormModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isEditing ? "Edit project" : "New project"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEditing ? t("project.form.editTitle") : t("project.form.createTitle")}
+    >
       <form onSubmit={handleSubmit(handleFormSubmit)} noValidate className="flex flex-col gap-4">
-        <Input label="Project name" error={errors.name?.message} {...register("name")} />
+        <Input
+          label={t("project.form.nameLabel")}
+          error={errors.name?.message ? t(errors.name.message) : undefined}
+          {...register("name")}
+        />
 
         <Textarea
-          label="Description"
-          error={errors.description?.message}
+          label={t("project.form.descriptionLabel")}
+          error={errors.description?.message ? t(errors.description.message) : undefined}
           {...register("description")}
         />
 
         <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-(--color-text)">Color</span>
+          <span className="text-sm font-medium text-(--color-text)">
+            {t("project.form.colorLabel")}
+          </span>
           <div className="flex gap-2">
             {PROJECT_COLORS.map((color) => (
               <button
@@ -87,18 +99,21 @@ export function ProjectFormModal({
           </div>
           {errors.color?.message && (
             <p role="alert" className="text-xs text-(--color-danger)">
-              {errors.color.message}
+              {t(errors.color.message)}
             </p>
           )}
         </div>
 
         <div className="mt-2 flex justify-end gap-3">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t("common.cancel")}
           </Button>
-          <Button type="submit">{isEditing ? "Save changes" : "Create project"}</Button>
+          <Button type="submit">
+            {isEditing ? t("project.form.save") : t("project.form.create")}
+          </Button>
         </div>
       </form>
     </Modal>
   );
 }
+

@@ -1,22 +1,20 @@
 
 // src/features/tasks/components/TaskFormModal.tsx
+
+
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import { Modal } from "../../../components/Modal";
 import { Input } from "../../../components/Input";
 import { Textarea } from "../../../components/Textarea";
 import { Select } from "../../../components/Select";
 import { Button } from "../../../components/Button";
-import {
-  TASK_STATUSES,
-  TASK_STATUS_LABELS,
-  TASK_PRIORITIES,
-  TASK_PRIORITY_LABELS,
-} from "../../../constants/task.constants";
+import { TASK_STATUSES, TASK_PRIORITIES } from "../../../constants/task.constants";
 import { taskSchema, type TaskFormValues } from "../schemas/task.schema";
-import type { Task } from "../../../types/task.types";
+import type { Task, TaskStatus, TaskPriority } from "../../../types/task.types";
 
 export interface TaskFormModalProps {
   isOpen: boolean;
@@ -25,7 +23,20 @@ export interface TaskFormModalProps {
   initialTask?: Task | null;
 }
 
+const statusTranslationKey: Record<TaskStatus, string> = {
+  todo: "task.status.todo",
+  "in-progress": "task.status.inProgress",
+  done: "task.status.done",
+};
+
+const priorityTranslationKey: Record<TaskPriority, string> = {
+  low: "task.priority.low",
+  medium: "task.priority.medium",
+  high: "task.priority.high",
+};
+
 export function TaskFormModal({ isOpen, onClose, onSubmit, initialTask }: TaskFormModalProps) {
+  const { t } = useTranslation();
   const isEditing = Boolean(initialTask);
 
   const {
@@ -62,41 +73,57 @@ export function TaskFormModal({ isOpen, onClose, onSubmit, initialTask }: TaskFo
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isEditing ? "Edit task" : "New task"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEditing ? t("task.form.editTitle") : t("task.form.createTitle")}
+    >
       <form onSubmit={handleSubmit(handleFormSubmit)} noValidate className="flex flex-col gap-4">
-        <Input label="Title" error={errors.title?.message} {...register("title")} />
+        <Input
+          label={t("task.form.titleLabel")}
+          error={errors.title?.message ? t(errors.title.message) : undefined}
+          {...register("title")}
+        />
 
         <Textarea
-          label="Description"
-          error={errors.description?.message}
+          label={t("task.form.descriptionLabel")}
+          error={errors.description?.message ? t(errors.description.message) : undefined}
           {...register("description")}
         />
 
         <div className="grid grid-cols-2 gap-3">
           <Select
-            label="Status"
-            error={errors.status?.message}
-            options={TASK_STATUSES.map((s) => ({ value: s, label: TASK_STATUS_LABELS[s] }))}
+            label={t("task.form.statusLabel")}
+            error={errors.status?.message ? t(errors.status.message) : undefined}
+            options={TASK_STATUSES.map((s) => ({ value: s, label: t(statusTranslationKey[s]) }))}
             {...register("status")}
           />
 
           <Select
-            label="Priority"
-            error={errors.priority?.message}
-            options={TASK_PRIORITIES.map((p) => ({ value: p, label: TASK_PRIORITY_LABELS[p] }))}
+            label={t("task.form.priorityLabel")}
+            error={errors.priority?.message ? t(errors.priority.message) : undefined}
+            options={TASK_PRIORITIES.map((p) => ({ value: p, label: t(priorityTranslationKey[p]) }))}
             {...register("priority")}
           />
         </div>
 
-        <Input type="date" label="Due date" error={errors.dueDate?.message} {...register("dueDate")} />
+        <Input
+          type="date"
+          label={t("task.form.dueDateLabel")}
+          error={errors.dueDate?.message ? t(errors.dueDate.message) : undefined}
+          {...register("dueDate")}
+        />
 
         <div className="mt-2 flex justify-end gap-3">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t("common.cancel")}
           </Button>
-          <Button type="submit">{isEditing ? "Save changes" : "Create task"}</Button>
+          <Button type="submit">
+            {isEditing ? t("task.form.save") : t("task.form.create")}
+          </Button>
         </div>
       </form>
     </Modal>
   );
 }
+
