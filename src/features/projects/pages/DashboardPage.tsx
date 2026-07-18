@@ -1,12 +1,12 @@
 // // src/features/projects/pages/DashboardPage.tsx
 
-
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FolderOpen } from "lucide-react";
+import { FolderOpen, Search } from "lucide-react";
 import { useAuthStore } from "../../../stores/auth.store";
 import { useProjectStore } from "../../../stores/project.store";
 import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
 import { EmptyState } from "../../../components/EmptyState";
 import { CardSkeleton } from "../../../components/Skeleton";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
@@ -21,6 +21,7 @@ function DashboardPage() {
   const { projects, isLoading, fetchProjects, createProject, updateProject, deleteProject } =
     useProjectStore();
 
+  const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [deletingProject, setDeletingProject] = useState<Project | null>(null);
@@ -28,6 +29,12 @@ function DashboardPage() {
   useEffect(() => {
     if (user) fetchProjects(user.id);
   }, [user, fetchProjects]);
+
+  const filteredProjects = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return projects;
+    return projects.filter((p) => p.name.toLowerCase().includes(query));
+  }, [projects, searchQuery]);
 
   const openCreateForm = () => {
     setEditingProject(null);
@@ -57,12 +64,29 @@ function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-medium text-(--color-text)">
           {t("dashboard.yourProjects")}
         </h2>
         <Button onClick={openCreateForm}>{t("dashboard.newProject")}</Button>
       </div>
+
+      {projects.length > 0 && (
+        <div className="relative mb-4 max-w-sm">
+          <Search
+            size={16}
+            className="pointer-events-none absolute top-1/2 start-3 -translate-y-1/2 text-(--color-text-muted)"
+          />
+          <Input
+            label={t("dashboard.searchPlaceholder")}
+            hideLabel
+            placeholder={t("dashboard.searchPlaceholder")}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="ps-9"
+          />
+        </div>
+      )}
 
       {isLoading && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -81,9 +105,13 @@ function DashboardPage() {
         />
       )}
 
-      {projects.length > 0 && (
+      {!isLoading && projects.length > 0 && filteredProjects.length === 0 && (
+        <EmptyState icon={<Search size={24} />} title={t("dashboard.noResults")} />
+      )}
+
+      {filteredProjects.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <ProjectCard
               key={project.id}
               project={project}
@@ -115,3 +143,4 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
+

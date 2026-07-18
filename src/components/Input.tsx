@@ -15,6 +15,7 @@ import type { InputHTMLAttributes } from "react";
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  /** Keeps the label accessible to screen readers but visually hidden — useful for search bars where a visible label would be redundant with the placeholder. */
   hideLabel?: boolean;
 }
 
@@ -42,7 +43,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             "rounded-sm border px-3 py-2.5 text-sm text-(--color-text) " +
             "bg-(--color-surface) placeholder:text-(--color-text-muted) " +
             "focus:outline-2 focus:outline-offset-1 " +
-            "disabled:opacity-50 disabled:cursor-not-allowed " +
             (error
               ? "border-(--color-danger) focus:outline-(--color-danger)"
               : "border-(--color-border) focus:outline-(--color-primary)") +

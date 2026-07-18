@@ -1,14 +1,15 @@
 // src/features/tasks/pages/ProjectDetailPage.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ListTodo } from "lucide-react";
+import { ListTodo, Search } from "lucide-react";
 
 import { useAuthStore } from "../../../stores/auth.store";
 import { useProjectStore } from "../../../stores/project.store";
 import { useTaskStore } from "../../../stores/task.store";
 import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
 import { EmptyState } from "../../../components/EmptyState";
 import { CardSkeleton } from "../../../components/Skeleton";
 import { ConfirmDialog } from "../../../components/ConfirmDialog";
@@ -30,6 +31,7 @@ function ProjectDetailPage() {
     useTaskStore();
 
   const [view, setView] = useState<TaskView>("list");
+  const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
@@ -45,6 +47,12 @@ function ProjectDetailPage() {
   useEffect(() => {
     if (projectId) fetchTasks(projectId);
   }, [projectId, fetchTasks]);
+
+  const filteredTasks = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return tasks;
+    return tasks.filter((task) => task.title.toLowerCase().includes(query));
+  }, [tasks, searchQuery]);
 
   if (!projectId) {
     return <Navigate to="/dashboard" replace />;
@@ -103,33 +111,50 @@ function ProjectDetailPage() {
       </header>
 
       {tasks.length > 0 && (
-        <div className="mb-4 inline-flex rounded-sm border border-(--color-border) p-0.5">
-          <button
-            type="button"
-            onClick={() => setView("list")}
-            aria-pressed={view === "list"}
-            className={
-              "rounded-sm px-3 py-1 text-sm font-medium " +
-              (view === "list"
-                ? "bg-(--color-primary) text-white"
-                : "text-(--color-text-muted)")
-            }
-          >
-            {t("task.view.list")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("kanban")}
-            aria-pressed={view === "kanban"}
-            className={
-              "rounded-sm px-3 py-1 text-sm font-medium " +
-              (view === "kanban"
-                ? "bg-(--color-primary) text-white"
-                : "text-(--color-text-muted)")
-            }
-          >
-            {t("task.view.kanban")}
-          </button>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="inline-flex w-fit rounded-sm border border-(--color-border) p-0.5">
+            <button
+              type="button"
+              onClick={() => setView("list")}
+              aria-pressed={view === "list"}
+              className={
+                "rounded-sm px-3 py-1 text-sm font-medium " +
+                (view === "list"
+                  ? "bg-(--color-primary) text-white"
+                  : "text-(--color-text-muted)")
+              }
+            >
+              {t("task.view.list")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("kanban")}
+              aria-pressed={view === "kanban"}
+              className={
+                "rounded-sm px-3 py-1 text-sm font-medium " +
+                (view === "kanban"
+                  ? "bg-(--color-primary) text-white"
+                  : "text-(--color-text-muted)")
+              }
+            >
+              {t("task.view.kanban")}
+            </button>
+          </div>
+
+          <div className="relative w-full sm:max-w-xs">
+            <Search
+              size={16}
+              className="pointer-events-none absolute top-1/2 start-3 -translate-y-1/2 text-(--color-text-muted)"
+            />
+            <Input
+              label={t("task.searchPlaceholder")}
+              hideLabel
+              placeholder={t("task.searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="ps-9"
+            />
+          </div>
         </div>
       )}
 
@@ -149,9 +174,13 @@ function ProjectDetailPage() {
         />
       )}
 
-      {!isLoading && tasks.length > 0 && view === "list" && (
+      {!isLoading && tasks.length > 0 && filteredTasks.length === 0 && (
+        <EmptyState icon={<Search size={24} />} title={t("task.noResults")} />
+      )}
+
+      {!isLoading && filteredTasks.length > 0 && view === "list" && (
         <div className="flex flex-col gap-3">
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <TaskListItem
               key={task.id}
               task={task}
@@ -163,9 +192,9 @@ function ProjectDetailPage() {
         </div>
       )}
 
-      {!isLoading && tasks.length > 0 && view === "kanban" && (
+      {!isLoading && filteredTasks.length > 0 && view === "kanban" && (
         <KanbanBoard
-          tasks={tasks}
+          tasks={filteredTasks}
           onStatusChange={updateTaskStatus}
           onEdit={openEditForm}
           onDelete={setDeletingTask}
